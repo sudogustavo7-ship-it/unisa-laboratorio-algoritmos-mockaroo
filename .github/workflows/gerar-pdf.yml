@@ -1,4 +1,4 @@
-name: Experimentos e relatório final (30 repetições)
+name: Experimentos e relatório final (30 repetições) v2
 on:
   push:
     branches: [main]
