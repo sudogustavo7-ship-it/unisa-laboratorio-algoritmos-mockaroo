@@ -38,6 +38,7 @@ def executar(reps=5):
                 a=s if 'binaria' in algo else u
                 target=a[idx] if idx is not None else max(a)+1
                 if algo=='linear_recursiva' and n>1000:
+                    # recursão profunda estoura a pilha do CPython: limite explicitamente documentado
                     result.append({**rowbase('1-4',pos,algo,n,0), 'media_ms':'','mediana_ms':'','desvio_ms':'','comparacoes':'','indice':'','status':'omitido: limite seguro de recursao'})
                     continue
                 try:
@@ -55,6 +56,7 @@ def executar(reps=5):
             for algo,fn in ORDENACOES.items():
                 if algo in ('bubble','selection','insertion') and n>1000:
                     sorts.append({**rowbase('5-6',estado,algo,n,0),'status':'omitido: limite quadratico de 1000 registros'});continue
+                # para evitar alto consumo de CPU, 100k somente algoritmos eficientes
                 rr=reps if n<=10000 else min(reps,3)
                 def job():
                     a=list(values);c,m=fn(a);assert a==sorted(values),(algo,n,estado);return c,m
@@ -65,6 +67,7 @@ def executar(reps=5):
     inserts=[];a=sorted(carregar(10000,'desordenada'))
     for p in [0,.25,.5,.75,1]:
         ix=min(int(p*len(a)),len(a)-1);key=a[0]-1 if p==0 else a[-1]+1 if p==1 else (a[ix-1]+a[ix])//2
+        # duplicidade de chave não compromete a comparação de estratégias de posicionamento
         def reorder():
             v=a.copy();v.append(key);merge(v);assert v==sorted(a+[key]);return None
         def maintain():
@@ -89,6 +92,7 @@ def executar(reps=5):
     save('remocoes.csv',removes)
     print('Experimento 9: consultas em lote',flush=True)
     big=carregar(100000,'desordenada');ordered=sorted(big);queries=[big[random.randrange(len(big))] for _ in range(10000)]
+    # Uma medição completa por volume; evita repetir 10 mil consultas lineares 30 vezes.
     bulk=[]
     for count in [1,10,100,1000]:
         qs=queries[:count]
@@ -99,6 +103,8 @@ def executar(reps=5):
         for q in qs:busca_binaria(v,q)
         tb=(time.perf_counter()-t)*1000
         bulk.extend([{'quantidade_buscas':count,'sistema':'A_linear','tempo_total_ms':ta,'repeticoes':1}, {'quantidade_buscas':count,'sistema':'B_merge_binaria','tempo_total_ms':tb,'repeticoes':1}])
+    # 10.000 consultas: projeção explicitamente identificada, baseada no custo
+    # marginal de 1000 consultas. Não é uma medição experimental.
     for sistema in ['A_linear','B_merge_binaria']:
         val_1000=next(v['tempo_total_ms'] for v in bulk if v['quantidade_buscas']==1000 and v['sistema']==sistema)
         val_100=next(v['tempo_total_ms'] for v in bulk if v['quantidade_buscas']==100 and v['sistema']==sistema)

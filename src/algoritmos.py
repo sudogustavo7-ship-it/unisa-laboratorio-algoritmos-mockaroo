@@ -10,6 +10,7 @@ def busca_linear(a, x):
     return -1,c
 
 def busca_linear_recursiva(a,x):
+    # índice explícito; Python possui limite de pilha, ampliado no programa de testes
     def visita(i):
         if i==len(a):return -1,0
         if a[i]==x:return i,1
