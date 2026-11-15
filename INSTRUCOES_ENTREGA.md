@@ -5,18 +5,23 @@
 **Curso:** Análise e Desenvolvimento de Sistemas (ADS), 4º semestre  
 **Instituição:** Universidade Santo Amaro (UNISA)
 
-## Arquivos disponíveis
-- [Relatório acadêmico em PDF](relatorio/relatorio_final.pdf)
-- [Código dos algoritmos e experimentos](src/)
-- [Bases sintéticas em CSV](dados/)
-- [Medições e resultados em CSV](resultados/)
-- [Cinco gráficos do estudo](graficos/)
-- [Instruções de execução](README.md)
+## Para enviar à professora
 
-## Como entregar
-Na plataforma da UNISA, anexe o relatório PDF e, se solicitado, informe o link deste repositório público.
+1. [Baixar o relatório acadêmico em PDF](relatorio/relatorio_final.pdf).
+2. Anexar o PDF na área de entrega da disciplina.
+3. Inserir também o link público do repositório:
+   https://github.com/sudogustavo7-ship-it/unisa-laboratorio-algoritmos-mockaroo
 
-## Observações metodológicas
-Os resultados do pacote disponível incluem três repetições por cenário repetível, embora o enunciado recomende trinta. Alguns métodos tiveram limites de entrada para evitar custo excessivo, e a condição de 10.000 consultas é uma projeção explicitamente indicada. Consulte o relatório e os resultados para ver as restrições.
+O link do GitHub também consta no relatório PDF.
 
-O PDF é gerado automaticamente pelo GitHub Actions a partir de `src/gerar_pdf.py`, usando as métricas e os gráficos versionados no repositório.
+## Materiais para conferência e execução
+
+- [Código-fonte Python](src/)
+- [Bases CSV](dados/)
+- [Resultados experimentais](resultados/)
+- [Gráficos](graficos/)
+- [Instruções técnicas](README.md)
+
+## Metodologia e ressalvas
+
+Os cenários computacionalmente viáveis foram executados com 30 repetições, utilizando média, mediana e desvio padrão. Algoritmos quadráticos e busca linear recursiva tiveram limites de tamanho documentados. No teste de muitas consultas, os volumes de 1.000 e 10.000 foram medidos diretamente, mas com 3 e 1 repetições, respectivamente, devido ao custo computacional. Nenhum valor extrapolado deve ser confundido com medição. Consulte CSVs, README e PDF para detalhes.
