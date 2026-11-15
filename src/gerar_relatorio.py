@@ -19,7 +19,7 @@ def filt(df,algo,scenario):return [(int(x['n']),float(x['media_ms'])) for x in d
 graph('01_tempo_busca.png','Tempo de busca por tamanho (elemento ausente)','Registros','Tempo médio (ms)',{a:filt(busca,a,'ausente') for a in ['linear','binaria']},True)
 graph('02_comparacoes_busca.png','Comparações de busca por tamanho (ausente)','Registros','Comparações', {a:[(int(x['n']),int(x['comparacoes'])) for x in busca if x['algoritmo']==a and x['cenario']=='ausente' and x.get('status')=='medido'] for a in ['linear','binaria']},True)
 graph('03_tempo_ordenacao.png','Tempo de ordenação (entrada aleatória)','Registros','Tempo médio (ms)',{a:filt(ordena,a,'aleatorio') for a in ['bubble','selection','insertion','shell','merge','quick','heap']},True)
-graph('04_consultas.png','Custo total do sistema por número de consultas','Consultas','Tempo total (ms)',{a:[(int(x['quantidade_buscas']),float(x['tempo_total_ms'])) for x in bulk if x['sistema']==a and x['status']=='MEDIDO'] for a in ['A_linear','B_merge_binaria']},True)
+graph('04_consultas.png','Custo total do sistema por número de consultas','Consultas','Tempo total (ms)',{a:[(int(x['quantidade_buscas']),float(x['tempo_total_ms'])) for x in bulk if x['sistema']==a and x['status'].startswith('MEDIDO')] for a in ['A_linear','B_merge_binaria']},True)
 graph('05_insercao_continua.png','Inserção contínua: comparação de estratégias','Número de inserções','Tempo médio (ms)',{a:[(int(x['cenario'].split()[0]),float(x['media_ms'])) for x in cont if x['algoritmo']==a] for a in ['manter_ordenada','ordenar_em_lote']})
 # Em ambientes sem template do Overleaf, os gráficos ainda podem ser gerados.
 # O PDF acadêmico é criado independentemente por gerar_pdf.py.
