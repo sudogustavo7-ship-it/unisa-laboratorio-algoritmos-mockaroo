@@ -21,6 +21,11 @@ graph('02_comparacoes_busca.png','Comparações de busca por tamanho (ausente)',
 graph('03_tempo_ordenacao.png','Tempo de ordenação (entrada aleatória)','Registros','Tempo médio (ms)',{a:filt(ordena,a,'aleatorio') for a in ['bubble','selection','insertion','shell','merge','quick','heap']},True)
 graph('04_consultas.png','Custo total do sistema por número de consultas','Consultas','Tempo total (ms)',{a:[(int(x['quantidade_buscas']),float(x['tempo_total_ms'])) for x in bulk if x['sistema']==a and x['status']=='MEDIDO'] for a in ['A_linear','B_merge_binaria']},True)
 graph('05_insercao_continua.png','Inserção contínua: comparação de estratégias','Número de inserções','Tempo médio (ms)',{a:[(int(x['cenario'].split()[0]),float(x['media_ms'])) for x in cont if x['algoritmo']==a] for a in ['manter_ordenada','ordenar_em_lote']})
+# Em ambientes sem template do Overleaf, os gráficos ainda podem ser gerados.
+# O PDF acadêmico é criado independentemente por gerar_pdf.py.
+if not (L/'Template_UNISA_Projeto.tex').exists():
+    print('Graficos gerados. Template LaTeX ausente: usar src/gerar_pdf.py para o PDF.')
+    raise SystemExit(0)
 # preâmbulo fornecido, com corpo substituído por resultados efetivos
 src=(L/'Template_UNISA_Projeto.tex').read_text()
 header=src.split('\\begin{document}')[0]
