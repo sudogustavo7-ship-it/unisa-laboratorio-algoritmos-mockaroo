@@ -1,9 +1,22 @@
-# Instruções para entrega — UNISA
+# Entrega do Projeto UNISA — Técnicas de Programação
 
-Este repositório contém a implementação em Python dos algoritmos e scripts de experimentos.
+**Aluno:** Gustavo Alves Borges  
+**RA:** 5682207  
+**Curso:** Análise e Desenvolvimento de Sistemas (ADS), 4º semestre  
+**Instituição:** Universidade Santo Amaro (UNISA)
 
-**Situação atual:** os arquivos de dados e o relatório PDF **ainda não estão incluídos neste repositório**. Para a entrega ficar completa, adicionar as pastas `dados/`, `resultados/`, `graficos/`, `relatorio/`, o notebook e o arquivo `src/gerar_relatorio.py` que estão no pacote ZIP entregue na conversa.
+## Arquivos disponíveis
+- [Relatório acadêmico em PDF](relatorio/relatorio_final.pdf)
+- [Código dos algoritmos e experimentos](src/)
+- [Bases sintéticas em CSV](dados/)
+- [Medições e resultados em CSV](resultados/)
+- [Cinco gráficos do estudo](graficos/)
+- [Instruções de execução](README.md)
 
-Após incluir esses arquivos, confirme se o PDF abre corretamente e se a estrutura está íntegra. O relatório deve ter identificação dos integrantes e observações transparentes sobre os testes limitados/projetados.
+## Como entregar
+Na plataforma da UNISA, anexe o relatório PDF e, se solicitado, informe o link deste repositório público.
 
-A entrega sugerida é o PDF na plataforma da UNISA acompanhado do link público deste repositório, observando qualquer orientação específica da professora.
+## Observações metodológicas
+Os resultados do pacote disponível incluem três repetições por cenário repetível, embora o enunciado recomende trinta. Alguns métodos tiveram limites de entrada para evitar custo excessivo, e a condição de 10.000 consultas é uma projeção explicitamente indicada. Consulte o relatório e os resultados para ver as restrições.
+
+O PDF é gerado automaticamente pelo GitHub Actions a partir de `src/gerar_pdf.py`, usando as métricas e os gráficos versionados no repositório.
