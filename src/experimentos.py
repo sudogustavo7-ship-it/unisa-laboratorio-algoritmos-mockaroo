@@ -1,10 +1,10 @@
 """Executa os 10 experimentos do enunciado atualizado.
-Modo rápido (padrão): 5 repetições, ordenações quadráticas limitadas a 1000.
-Modo completo: --repeticoes 30 (atenção ao custo computacional).
+Modo acadêmico (padrão): 30 repetições em todos os cenários viáveis.
+Consultas lineares muito pesadas possuem execução reduzida, declarada em CSV.
 Os dados e a metodologia registram integralmente os limites usados.
 """
 from pathlib import Path
-import csv,sys,time,statistics,random,platform,argparse
+import csv,sys,time,statistics,random,platform,argparse,os
 from algoritmos import BUSCAS,ORDENACOES,busca_linear,busca_binaria,merge,quick
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'resultados';OUT.mkdir(exist_ok=True)
@@ -27,7 +27,7 @@ def medir(fn,reps):
 def rowbase(exp,scenario,algo,n,r,extra=None):
     return {'experimento':exp,'cenario':scenario,'algoritmo':algo,'n':n,'repeticoes':r,**(extra or {})}
 
-def executar(reps=5):
+def executar(reps=30):
     random.seed(2026);result=[]
     print('Experimentos 1-4: buscas',flush=True)
     for n in [1000,10000,100000]:
@@ -57,7 +57,7 @@ def executar(reps=5):
                 if algo in ('bubble','selection','insertion') and n>1000:
                     sorts.append({**rowbase('5-6',estado,algo,n,0),'status':'omitido: limite quadratico de 1000 registros'});continue
                 # para evitar alto consumo de CPU, 100k somente algoritmos eficientes
-                rr=reps if n<=10000 else min(reps,3)
+                rr=reps
                 def job():
                     a=list(values);c,m=fn(a);assert a==sorted(values),(algo,n,estado);return c,m
                 stats,(c,m)=medir(job,rr)
@@ -92,25 +92,27 @@ def executar(reps=5):
     save('remocoes.csv',removes)
     print('Experimento 9: consultas em lote',flush=True)
     big=carregar(100000,'desordenada');ordered=sorted(big);queries=[big[random.randrange(len(big))] for _ in range(10000)]
-    # Uma medição completa por volume; evita repetir 10 mil consultas lineares 30 vezes.
+    # Cenários 1, 10, 100: 30 repetições efetivas. 1.000: 3 e 10.000: 1 por custo extremo
+    # da implementação explícita de busca linear em Python; nunca estimar como medição.
     bulk=[]
-    for count in [1,10,100,1000]:
+    for count in [1,10,100,1000,10000]:
         qs=queries[:count]
-        t=time.perf_counter()
-        for q in qs:busca_linear(big,q)
-        ta=(time.perf_counter()-t)*1000
-        t=time.perf_counter();v=big.copy();merge(v)
-        for q in qs:busca_binaria(v,q)
-        tb=(time.perf_counter()-t)*1000
-        bulk.extend([{'quantidade_buscas':count,'sistema':'A_linear','tempo_total_ms':ta,'repeticoes':1}, {'quantidade_buscas':count,'sistema':'B_merge_binaria','tempo_total_ms':tb,'repeticoes':1}])
-    # 10.000 consultas: projeção explicitamente identificada, baseada no custo
-    # marginal de 1000 consultas. Não é uma medição experimental.
-    for sistema in ['A_linear','B_merge_binaria']:
-        val_1000=next(v['tempo_total_ms'] for v in bulk if v['quantidade_buscas']==1000 and v['sistema']==sistema)
-        val_100=next(v['tempo_total_ms'] for v in bulk if v['quantidade_buscas']==100 and v['sistema']==sistema)
-        estimate=val_1000+(10000-1000)*(val_1000-val_100)/(1000-100)
-        bulk.append({'quantidade_buscas':10000,'sistema':sistema,'tempo_total_ms':estimate,'repeticoes':0,'status':'PROJECAO_NAO_MEDIDA'})
-    for r in bulk:r.setdefault('status','MEDIDO')
+        rr=reps if count<=100 else (3 if count==1000 else 1)
+        for sistema in ('A_linear','B_merge_binaria'):
+            def run():
+                if sistema=='A_linear':
+                    for q in qs:busca_linear(big,q)
+                else:
+                    v=big.copy();merge(v)
+                    for q in qs:busca_binaria(v,q)
+                return None
+            stats,_=medir(run,rr)
+            bulk.append({'quantidade_buscas':count,'sistema':sistema,
+                         'tempo_total_ms':stats['media_ms'],
+                         'media_ms':stats['media_ms'],'mediana_ms':stats['mediana_ms'],
+                         'desvio_ms':stats['desvio_ms'],'repeticoes':rr,
+                         'status':'MEDIDO' if rr==reps else 'MEDIDO_REPETICOES_REDUZIDAS'})
+            print('   consultas',count,sistema,rr,'repeticoes',flush=True)
     save('muitas_consultas.csv',bulk)
     print('Experimento 10: inserção contínua',flush=True)
     continuous=[]
@@ -137,4 +139,4 @@ def executar(reps=5):
     print('Concluído',flush=True)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--repeticoes',type=int,default=5);args=p.parse_args();executar(args.repeticoes)
+    p=argparse.ArgumentParser();p.add_argument('--repeticoes',type=int,default=30);args=p.parse_args();executar(args.repeticoes)
