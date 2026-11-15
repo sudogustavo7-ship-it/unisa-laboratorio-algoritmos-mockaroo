@@ -1,36 +1,43 @@
 # Laboratório Experimental de Algoritmos — UNISA (2026)
 
-Projeto da disciplina Técnicas de Programação, com experimentos sobre busca, ordenação, inserção e remoção de dados sintéticos.
+**Aluno:** Gustavo Alves Borges  
+**RA:** 5682207  
+**Curso:** Análise e Desenvolvimento de Sistemas (ADS), 4º semestre  
+**Disciplina:** Técnicas de Programação  
+**Instituição:** Universidade Santo Amaro (UNISA)
 
-## Organização do pacote completo
-- `src/algoritmos.py`: quatro buscas e sete algoritmos de ordenação.
-- `src/preparar_dados.py`: adaptação e validação das bases.
-- `src/experimentos.py`: dez experimentos.
-- `src/testes.py`: verificações funcionais.
-- `src/gerar_relatorio.py`: gráficos e relatório.
-- `dados/`: bases em CSV.
-- `resultados/`: métricas em CSV.
-- `graficos/`: figuras.
-- `relatorio/`: PDF e fontes LaTeX.
+## Entregáveis
 
-## Execução
-Requer Python 3.10+ e matplotlib. Na raiz do projeto:
+- [Relatório em PDF](relatorio/relatorio_final.pdf) — relatório com identificação acadêmica, gráficos e link para este repositório;
+- [Código Python](src/) — quatro buscas, sete algoritmos de ordenação e dez experimentos;
+- [Bases sintéticas](dados/) — 1.000, 10.000 e 100.000 registros, ordenados e desordenados;
+- [Resultados das medições](resultados/) — CSVs de busca, ordenação, inserção, remoção e consultas;
+- [Cinco gráficos](graficos/) — visualizações dos dados coletados.
+
+## Reprodução
+
+Python 3.11+:
 
 ```bash
+python -m pip install -r requirements.txt
 python src/testes.py
 python src/preparar_dados.py
-python src/experimentos.py --repeticoes 3
+python src/experimentos.py --repeticoes 30
 python src/gerar_relatorio.py
+python -m pip install reportlab pillow
+python src/gerar_pdf.py
 ```
 
-Para o plano completo de 30 repetições, use `--repeticoes 30`. Alguns casos grandes têm alto custo computacional.
+O script `gerar_relatorio.py` gera os cinco gráficos e, quando o template LaTeX está disponível, também produz uma fonte LaTeX. O PDF identificado também pode ser produzido com o script `gerar_pdf.py`. A geração automatizada é configurada em [GitHub Actions](.github/workflows/gerar-pdf.yml).
 
-## Limitações importantes
-Os dados originais tinham IDs repetidos: 5 na base de 10.000 e 501 na de 100.000. Os scripts reatribuem os repetidos preservando os demais campos.
+## Método e limitações
 
-As medições do pacote foram realizadas com 3 repetições nos testes repetíveis, não 30. Bubble, Selection e Insertion foram limitados a 1.000 registros; busca linear recursiva, limitada pela pilha, a 1.000. O resultado para 10.000 consultas no experimento 9 é uma **projeção declarada**, não uma medição.
+As bases são sintéticas, com normalização das chaves únicas. O script original encontrou 5 IDs duplicados na base de 10 mil e 501 na de 100 mil e os reatribuiu.
 
-O repositório pode conter apenas parte dos arquivos enquanto o carregamento estiver em andamento. Para submissão acadêmica, o relatório em PDF e os CSVs completos devem acompanhar o código.
+Nos cenários computacionalmente viáveis, o experimento usa **30 repetições**, calculando média, mediana e desvio padrão. Os resultados de 1.000 e 10.000 buscas em lote realizam respectivamente **3 e 1 repetições**, devido ao custo computacional elevado da busca linear pura em 100 mil registros. Esses casos são medições diretas, **não projeções**. Algoritmos quadráticos foram limitados à base de 1.000 entradas, e a busca linear recursiva não foi executada nas bases grandes por restrição de profundidade recursiva.
 
-## Identificação acadêmica
-Preencher nomes, RA, curso e turma na capa do relatório antes da entrega.
+Todas as restrições permanecem transparentes nos CSVs e no relatório; não se deve interpretar os casos limitados como 30 repetições.
+
+## Repositório público
+
+https://github.com/sudogustavo7-ship-it/unisa-laboratorio-algoritmos-mockaroo
